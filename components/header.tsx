@@ -12,8 +12,9 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      setIsScrolled(window.scrollY > 100)
     }
+    handleScroll()
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -28,15 +29,15 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/95 backdrop-blur-xl shadow-lg py-3"
+          ? "bg-white/98 backdrop-blur-xl shadow-lg py-3"
           : "bg-transparent py-5"
       }`}
     >
       <div className="container mx-auto px-4">
         {/* Desktop: three-column centered layout */}
-        <div className="hidden lg:grid lg:grid-cols-3 items-center">
+        <div className="hidden lg:grid lg:grid-cols-[1fr_auto_1fr] items-center gap-8">
           {/* Logo — left */}
           <a
             href="#"

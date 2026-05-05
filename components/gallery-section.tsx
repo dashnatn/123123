@@ -5,42 +5,37 @@ import { useState } from "react"
 
 const galleryImages = [
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony1-AC3f80njYam3uHMDUelq9y18UXkXog.png",
+    src: "/images/harmony1.png",
     alt: "Деревянный домик Гармония",
     category: "Гармония"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/oasis3-EADYs2DTfEaX0oGEuxGzMwIh2AU0o4.png",
+    src: "/images/oasis3.png",
     alt: "Интерьер VIP-домика Оазис",
     category: "Оазис"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony6-4KglDJ02HFFFLWU5FSJan81WAf7aux.png",
+    src: "/images/harmony3.png",
     alt: "Домики Гармония с террасой",
     category: "Гармония"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/oasis2-nrL20fO6C4fY09Po2pr7MzJrh378ut.png",
+    src: "/images/oasis2.png",
     alt: "Семейный отдых с мангалом",
     category: "Оазис"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony2-eZWN8BLBBJ3Hro3Uu310TvvfCFXJ6Q.png",
+    src: "/images/harmony2.png",
     alt: "Спальня мансарда Гармония",
     category: "Гармония"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/oasis1-ZCf89I3MGo0Y1a8sotuKo5L4pxDwFd.png",
+    src: "/images/oasis1.png",
     alt: "Территория Оазис",
     category: "Оазис"
   },
   {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony5-wFReB83kl1lAppe3kwIbCf0ND3hqfB.png",
-    alt: "Гостиная Гармония",
-    category: "Гармония"
-  },
-  {
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmonby4-JuJ5SSWaEqqUgIIclfQaaqWBk5JDCG.png",
+    src: "/images/harmony4.png",
     alt: "Кухня Гармония",
     category: "Гармония"
   },
@@ -57,7 +52,7 @@ export function GallerySection() {
   return (
     <section id="gallery" className="pb-24 pt-8 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-on-scroll">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-4">
             Фото <span className="text-primary">галерея</span>
           </h2>
@@ -101,6 +96,7 @@ export function GallerySection() {
                   src={image.src}
                   alt={image.alt}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  loading="lazy"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import { BookingProvider } from '@/components/booking-provider'
+import { ScrollAnimate } from '@/components/scroll-animate'
 import './globals.css'
 
 const montserrat = Montserrat({ 
@@ -22,8 +23,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className="bg-background">
+      <head>
+        <link rel="preload" href="/images/hero-bg.png" as="image" />
+        <link rel="preload" href="/images/cta-bg.webp" as="image" />
+        <link rel="preload" href="/images/harmony1.png" as="image" />
+        <link rel="preload" href="/images/oasis1.png" as="image" />
+      </head>
       <body className={`${montserrat.variable} font-sans antialiased`}>
         <BookingProvider>
+          <ScrollAnimate />
           {children}
         </BookingProvider>
       </body>

@@ -21,13 +21,10 @@ const locations = [
     address: "Избербаш, ул. Салихова, 64/1",
     mapLink: "https://yandex.com/maps/-/CPWNY0~9",
     images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony1-AC3f80njYam3uHMDUelq9y18UXkXog.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony3-b5Z3Nn2Cj0FRXZ90K53uwIdVRoLZgi.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony6-4KglDJ02HFFFLWU5FSJan81WAf7aux.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony7-zzit5wsOL81wCoJtv2EM7KnAqODR4T.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony5-wFReB83kl1lAppe3kwIbCf0ND3hqfB.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmony2-eZWN8BLBBJ3Hro3Uu310TvvfCFXJ6Q.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/harmonby4-JuJ5SSWaEqqUgIIclfQaaqWBk5JDCG.png",
+      "/images/harmony1.png",
+      "/images/harmony2.png", 
+      "/images/harmony3.png",
+      "/images/harmony4.png",
     ]
   },
   {
@@ -44,9 +41,9 @@ const locations = [
     address: "с. Первомайское, Песчаная ул., 2/2",
     mapLink: "https://yandex.ru/maps/-/CDrAj4~E",
     images: [
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/oasis1-ZCf89I3MGo0Y1a8sotuKo5L4pxDwFd.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/oasis2-nrL20fO6C4fY09Po2pr7MzJrh378ut.png",
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/oasis3-EADYs2DTfEaX0oGEuxGzMwIh2AU0o4.png",
+      "/images/oasis1.png",
+      "/images/oasis2.png",
+      "/images/oasis3.png",
     ]
   }
 ]
@@ -56,18 +53,24 @@ function LocationCard({ location, index }: { location: typeof locations[0]; inde
   const { open } = useBooking()
 
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+    <div className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 animate-on-scroll">
       {/* Image Gallery */}
       <div className="relative aspect-[4/3] overflow-hidden">
-        <motion.img
+        <img
           key={currentImage}
           src={location.images[currentImage]}
           alt={location.name}
           className="w-full h-full object-cover"
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+          loading={index < 2 ? "eager" : "lazy"}
+          decoding="async"
+          width="600"
+          height="450"
         />
+        
+        {/* Preload next images */}
+        {location.images.slice(1, 3).map((src, idx) => (
+          <link key={idx} rel="preload" href={src} as="image" />
+        ))}
         
         {/* Badge */}
         <div className={`absolute top-4 left-4 ${location.badgeColor} text-primary-foreground text-xs font-bold px-4 py-2 rounded-full shadow-lg`}>
@@ -175,7 +178,7 @@ export function LocationsSection() {
   return (
     <section id="locations" className="pb-24 pt-8" style={{ background: "#f5f0e8" }}>
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 text-center md:text-left">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 text-center md:text-left animate-on-scroll">
           <div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-4">
               Выберите <span className="text-primary">свой домик</span>

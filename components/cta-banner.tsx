@@ -13,16 +13,20 @@ export function CtaBanner() {
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/voda2-z0lTU53GY7vtWcIhjFJL9rJj1s7Leh.webp"
+          src="/images/cta-bg.webp"
           alt="Каспийское море"
           className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+          width="1920"
+          height="1080"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
       </div>
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl animate-on-scroll">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6 leading-tight">
             Отдых, который
             <br />

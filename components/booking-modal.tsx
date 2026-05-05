@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { WhatsAppIcon, PhoneIcon } from "@/components/icons"
+import { WhatsAppIcon, PhoneIcon, CheckCircleIcon, ClipboardIcon } from "@/components/icons"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -12,15 +12,62 @@ interface BookingModalProps {
 
 export function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [showForm, setShowForm] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
     checkIn: "",
     checkOut: "",
-    guests: "2"
+    guests: "2",
+    location: ""
   })
 
   const handleClose = () => {
     onClose()
     setShowForm(false)
+    setSuccess(false)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const lastSubmit = localStorage.getItem('lastBookingSubmit')
+    if (lastSubmit) {
+      const timeDiff = Date.now() - parseInt(lastSubmit)
+      const minutesLeft = Math.ceil((20 * 60 * 1000 - timeDiff) / 60000)
+      if (timeDiff < 20 * 60 * 1000) {
+        alert(`⏰ Вы уже отправляли заявку. Попробуйте через ${minutesLeft} мин.`)
+        return
+      }
+    }
+
+    setLoading(true)
+
+    try {
+      const response = await fetch('/api/send-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+
+      if (response.ok) {
+        localStorage.setItem('lastBookingSubmit', Date.now().toString())
+        alert('✅ Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.')
+        setSuccess(true)
+        setTimeout(() => {
+          handleClose()
+          setFormData({ name: "", phone: "", checkIn: "", checkOut: "", guests: "2", location: "" })
+        }, 2000)
+      } else {
+        alert('❌ Ошибка отправки. Попробуйте позже или позвоните нам.')
+      }
+    } catch (error) {
+      console.error(error)
+      alert('❌ Ошибка отправки. Попробуйте позже или позвоните нам.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -43,7 +90,7 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
           >
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-black text-foreground">
-                {showForm ? "Заполните форму" : "Связаться с нами"}
+                {success ? "Готово!" : showForm ? "Оставьте заявку" : "Связаться с нами"}
               </h3>
               <button
                 onClick={handleClose}
@@ -53,16 +100,23 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
               </button>
             </div>
 
-            {!showForm ? (
+            {success ? (
+              <div className="py-8 text-center">
+                <CheckCircleIcon className="w-16 h-16 mx-auto mb-4 text-green-600" />
+                <p className="text-lg font-bold text-green-600">Заявка отправлена!</p>
+                <p className="text-muted-foreground mt-2">Мы свяжемся с вами в ближайшее время</p>
+              </div>
+            ) : !showForm ? (
               <>
                 <p className="text-muted-foreground mb-6">Выберите удобный способ связи</p>
 
                 <div className="space-y-3">
                   <Button
                     onClick={() => setShowForm(true)}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-6 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-6 rounded-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                   >
-                    Заполнить форму
+                    <ClipboardIcon className="w-5 h-5" />
+                    Оставить заявку
                   </Button>
 
                   <Button
@@ -105,75 +159,91 @@ export function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 </div>
               </>
             ) : (
-              <>
-                <p className="text-muted-foreground mb-6">Выберите даты и мы свяжемся с вами</p>
-                
-                <div className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Ваше имя</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    placeholder="Иван Иванов"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Телефон</label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    placeholder="+7 (999) 123-45-67"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Локация</label>
+                  <select
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  >
+                    <option value="">Не выбрано</option>
+                    <option value="Гармония">Гармония</option>
+                    <option value="Оазис">Оазис</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">Дата заезда</label>
+                    <label className="block text-sm font-semibold mb-2">Заезд</label>
                     <input
                       type="date"
                       value={formData.checkIn}
                       onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">Дата выезда</label>
+                    <label className="block text-sm font-semibold mb-2">Выезд</label>
                     <input
                       type="date"
                       value={formData.checkOut}
                       onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">Количество гостей</label>
-                    <select
-                      value={formData.guests}
-                      onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-                    >
-                      <option value="1">1 гость</option>
-                      <option value="2">2 гостя</option>
-                      <option value="3">3 гостя</option>
-                      <option value="4">4 гостя</option>
-                      <option value="5">5 гостей</option>
-                      <option value="6">6 гостей</option>
-                      <option value="7">7 гостей</option>
-                      <option value="8">8 гостей</option>
-                    </select>
-                  </div>
-
-                  <Button
-                    asChild
-                    className="w-full bg-foreground hover:bg-foreground/90 text-background font-bold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] text-base"
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-2">Гостей</label>
+                  <select
+                    value={formData.guests}
+                    onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
                   >
-                    <a href="tel:+79640506929">Забронировать</a>
-                  </Button>
-
+                    {[1,2,3,4,5,6,7,8].map(n => (
+                      <option key={n} value={n}>{n} {n === 1 ? 'гость' : n < 5 ? 'гостя' : 'гостей'}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex gap-3 pt-2">
                   <Button
-                    onClick={() => setShowForm(false)}
+                    type="button"
                     variant="outline"
-                    className="w-full border-2 border-border hover:bg-secondary font-semibold py-4 rounded-xl transition-all"
+                    onClick={() => setShowForm(false)}
+                    className="flex-1 py-6 rounded-xl"
                   >
                     Назад
                   </Button>
-
-                  <div className="text-center pt-2">
-                    <span className="text-muted-foreground text-sm">или написать в </span>
-                    <a
-                      href="https://wa.me/79640506929"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-green-600 font-bold text-sm hover:underline inline-flex items-center gap-1"
-                    >
-                      WhatsApp
-                      <WhatsAppIcon className="w-4 h-4" />
-                    </a>
-                  </div>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 bg-primary hover:bg-primary/90 py-6 rounded-xl"
+                  >
+                    {loading ? "Отправка..." : "Отправить"}
+                  </Button>
                 </div>
-              </>
+              </form>
             )}
           </motion.div>
         </motion.div>

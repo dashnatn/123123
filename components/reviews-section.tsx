@@ -52,7 +52,7 @@ export function ReviewsSection() {
   return (
     <section id="reviews" className="pt-8 pb-0 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 text-center md:text-left">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 text-center md:text-left animate-on-scroll">
           <div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-4">
               Что говорят <span className="text-primary">наши гости</span>
@@ -77,7 +77,7 @@ export function ReviewsSection() {
             <motion.div
               key={index}
               whileHover={{ y: -5, scale: 1.01 }}
-              className="bg-secondary/30 rounded-3xl p-6 md:p-8 hover:bg-white hover:shadow-xl transition-all duration-500"
+              className={`bg-secondary/30 rounded-3xl p-6 md:p-8 hover:bg-white hover:shadow-xl transition-all duration-500 animate-on-scroll scroll-animate-delay-${index % 2 + 1}`}
             >
               <StarRating rating={review.rating} />
               

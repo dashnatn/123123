@@ -1,13 +1,9 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
+import { motion } from "framer-motion"
 import { InstagramIcon, WhatsAppIcon, PhoneIcon, MessageIcon, MapPinIcon } from "@/components/icons"
 
 export function Footer() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-50px" })
-
   const navLinks = [
     { label: "Локации", href: "#locations" },
     { label: "Удобства", href: "#amenities" },
@@ -17,15 +13,11 @@ export function Footer() {
   ]
 
   return (
-    <footer id="contacts" ref={ref} className="text-background py-16 mt-0" style={{ background: "#2a2118" }}>
+    <footer id="contacts" className="text-background py-16 mt-0 animate-on-scroll" style={{ background: "#2a2118" }}>
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Logo & Description */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
+          <div>
             <div className="text-2xl font-black mb-4">
               <span className="text-primary">Гармония</span>
               <span className="mx-2 opacity-50">&</span>
@@ -54,14 +46,10 @@ export function Footer() {
                 <WhatsAppIcon className="w-5 h-5" />
               </a>
             </div>
-          </motion.div>
+          </div>
 
           {/* Navigation */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
+          <div>
             <h4 className="font-bold text-lg mb-6">Навигация</h4>
             <ul className="space-y-3">
               {navLinks.map((link) => (
@@ -75,14 +63,10 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Contacts */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
+          <div>
             <h4 className="font-bold text-lg mb-6">Контакты</h4>
             <ul className="space-y-4">
               <li>
@@ -126,14 +110,10 @@ export function Footer() {
                 </a>
               </li>
             </ul>
-          </motion.div>
+          </div>
 
           {/* Addresses */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
+          <div>
             <h4 className="font-bold text-lg mb-6">Адреса</h4>
             <div className="space-y-6">
               <div>
@@ -169,20 +149,15 @@ export function Footer() {
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom Bar */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="pt-8 border-t border-white/10 text-center"
-        >
+        <div className="pt-8 border-t border-white/10 text-center">
           <p className="text-background/50 text-sm">
             &copy; {new Date().getFullYear()} Гармония & Оазис. Все права защищены.
           </p>
-        </motion.div>
+        </div>
       </div>
     </footer>
   )
